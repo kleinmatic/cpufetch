@@ -192,7 +192,10 @@ char* get_str_topology(struct topology* topo, bool dual_socket) {
   UNUSED(dual_socket);
   uint32_t size = 3 + 7 + 1;
   char* string = emalloc(sizeof(char) * size);
-  snprintf(string, size, "%d cores", topo->total_cores);
+  if(topo->total_cores == 1)
+    snprintf(string, size, "1 core");
+  else
+    snprintf(string, size, "%d cores", topo->total_cores);
   return string;
 }
 

@@ -65,7 +65,8 @@ ifneq ($(OS),Windows_NT)
 		SRC_DIR=src/alpha/
 		SOURCE += $(COMMON_SRC) $(SRC_DIR)alpha.c $(SRC_DIR)uarch.c
 		HEADERS += $(COMMON_HDR) $(SRC_DIR)alpha.h $(SRC_DIR)uarch.h
-		CFLAGS += -DARCH_ALPHA -Wno-unused-parameter -std=gnu99 -fstack-protector-all
+		# Note: gcc does not support -fstack-protector on the Alpha target
+		CFLAGS += -DARCH_ALPHA -Wno-unused-parameter -std=gnu99
 	else
 		# Error lines should not be tabulated because Makefile complains about it
 $(warning Unsupported arch detected: $(arch). See https://github.com/Dr-Noob/cpufetch#1-support)
