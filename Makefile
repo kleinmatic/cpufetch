@@ -61,6 +61,11 @@ ifneq ($(OS),Windows_NT)
 		SOURCE += $(COMMON_SRC) $(SRC_DIR)riscv.c $(SRC_DIR)uarch.c $(SRC_COMMON)soc.c $(SRC_DIR)soc.c $(SRC_DIR)udev.c
 		HEADERS += $(COMMON_HDR) $(SRC_DIR)riscv.h $(SRC_DIR)uarch.h $(SRC_COMMON)soc.h $(SRC_DIR)soc.h $(SRC_DIR)udev.h $(SRC_DIR)socs.h
 		CFLAGS += -DARCH_RISCV -Wno-unused-parameter -std=c99 -fstack-protector-all
+	else ifeq ($(arch), alpha)
+		SRC_DIR=src/alpha/
+		SOURCE += $(COMMON_SRC) $(SRC_DIR)alpha.c $(SRC_DIR)uarch.c
+		HEADERS += $(COMMON_HDR) $(SRC_DIR)alpha.h $(SRC_DIR)uarch.h
+		CFLAGS += -DARCH_ALPHA -Wno-unused-parameter -std=gnu99 -fstack-protector-all
 	else
 		# Error lines should not be tabulated because Makefile complains about it
 $(warning Unsupported arch detected: $(arch). See https://github.com/Dr-Noob/cpufetch#1-support)

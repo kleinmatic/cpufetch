@@ -13,6 +13,8 @@ typedef int STYLE;
   #include "../arm/midr.h"
 #elif ARCH_RISCV
   #include "../riscv/riscv.h"
+#elif ARCH_ALPHA
+  #include "../alpha/alpha.h"
 #endif
 
 //                              +-----------------------------------+-----------------------+

@@ -43,6 +43,9 @@
 #elif ARCH_RISCV
   static const char* ARCH_STR = "RISC-V build";
   #include "../riscv/riscv.h"
+#elif ARCH_ALPHA
+  static const char* ARCH_STR = "Alpha build";
+  #include "../alpha/alpha.h"
 #endif
 
 #ifdef __linux__
@@ -53,6 +56,8 @@
   #endif
 #elif __FreeBSD__
   static const char* OS_STR = "FreeBSD";
+#elif __NetBSD__
+  static const char* OS_STR = "NetBSD";
 #elif _WIN32
   static const char* OS_STR = "Windows";
 #elif defined __APPLE__ || __MACH__
@@ -234,6 +239,11 @@ bool bind_to_cpu(int cpu_id) {
       return false;
     }
     return true;
+  #else
+    // CPU affinity binding is not implemented on this platform. It is only
+    // used by the x86/ARM frequency-measurement path, which Alpha does not use.
+    UNUSED(cpu_id);
+    return false;
   #endif
 }
 #endif

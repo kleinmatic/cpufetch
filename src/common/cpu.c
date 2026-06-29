@@ -16,6 +16,8 @@
   #include "../arm/uarch.h"
 #elif ARCH_RISCV
   #include "../riscv/uarch.h"
+#elif ARCH_ALPHA
+  #include "../alpha/uarch.h"
 #endif
 
 #define STRING_YES        "Yes"
@@ -40,13 +42,13 @@ int64_t get_freq_pp(struct frequency* freq) {
 }
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_PPC)
+#if defined(ARCH_X86) || defined(ARCH_PPC) || defined(ARCH_ALPHA)
 char* get_str_cpu_name(struct cpuInfo* cpu, bool fcpuname) {
   #ifdef ARCH_X86
   if(!fcpuname) {
     return get_str_cpu_name_abbreviated(cpu);
   }
-  #elif ARCH_PPC
+  #else
   UNUSED(fcpuname);
   #endif
   return cpu->cpu_name;
@@ -201,7 +203,7 @@ char* get_str_peak_performance(int64_t flops) {
 void init_topology_struct(struct topology* topo, struct cache* cach) {
   topo->total_cores = 0;
   topo->cach = cach;
-#if defined(ARCH_X86) || defined(ARCH_PPC)
+#if defined(ARCH_X86) || defined(ARCH_PPC) || defined(ARCH_ALPHA)
   topo->physical_cores = 0;
   topo->logical_cores = 0;
   topo->smt_supported = 0;
@@ -249,7 +251,7 @@ void free_hv_struct(struct hypervisor* hv) {
 void free_cpuinfo_struct(struct cpuInfo* cpu) {
   free_uarch_struct(cpu->arch);
   free_hv_struct(cpu->hv);
-  #ifdef ARCH_X86
+  #if defined(ARCH_X86) || defined(ARCH_ALPHA)
   free(cpu->cpu_name);
   #endif
   free(cpu);

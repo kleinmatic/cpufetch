@@ -26,6 +26,9 @@
   #include "../riscv/riscv.h"
   #include "../riscv/uarch.h"
   #include "../riscv/soc.h"
+#elif ARCH_ALPHA
+  #include "../alpha/uarch.h"
+  #include "../alpha/alpha.h"
 #endif
 
 #ifdef _WIN32
@@ -52,7 +55,7 @@ typedef struct {
 } AttributeField;
 
 enum {
-#if defined(ARCH_X86)
+#if defined(ARCH_X86) || defined(ARCH_ALPHA)
   ATTRIBUTE_NAME,
 #elif defined(ARCH_PPC)
   ATTRIBUTE_PART_NUMBER,
@@ -79,6 +82,8 @@ enum {
   ATTRIBUTE_FEATURES,
 #elif ARCH_RISCV
   ATTRIBUTE_EXTENSIONS,
+#elif ARCH_ALPHA
+  ATTRIBUTE_FEATURES,
 #endif
   ATTRIBUTE_L1i,
   ATTRIBUTE_L1d,
@@ -88,7 +93,7 @@ enum {
 };
 
 static const AttributeField ATTRIBUTE_INFO[] = {
-#if defined(ARCH_X86)
+#if defined(ARCH_X86) || defined(ARCH_ALPHA)
   { ATTRIBUTE_NAME,        "Name:",              "Name:"          },
 #elif defined(ARCH_PPC)
   { ATTRIBUTE_PART_NUMBER, "Part Number:",       "P/N:"           },
@@ -115,6 +120,8 @@ static const AttributeField ATTRIBUTE_INFO[] = {
   { ATTRIBUTE_FEATURES,    "Features: ",         "Features: "     },
 #elif ARCH_RISCV
   { ATTRIBUTE_EXTENSIONS,  "Extensions: ",       "Extensions: "   },
+#elif ARCH_ALPHA
+  { ATTRIBUTE_FEATURES,    "ISA Extensions:",    "ISA Ext:"       },
 #endif
   { ATTRIBUTE_L1i,         "L1i Size:",          "L1i Size:"      },
   { ATTRIBUTE_L1d,         "L1d Size:",          "L1d Size:"      },
@@ -388,6 +395,8 @@ void choose_ascii_art(struct ascii* art, struct color** cs, struct terminal* ter
     art->art = &logo_spacemit;
   else
     art->art = &logo_riscv;
+#elif ARCH_ALPHA
+  art->art = &logo_alpha;
 #endif
 
   // 2. Choose colors
@@ -457,7 +466,7 @@ uint32_t longest_field_length(struct ascii* art, int la) {
   return max;
 }
 
-#if defined(ARCH_X86) || defined(ARCH_PPC)
+#if defined(ARCH_X86) || defined(ARCH_PPC) || defined(ARCH_ALPHA)
 void print_ascii_generic(struct ascii* art, uint32_t la, int32_t termw, bool use_short, bool hybrid_architecture) {
   struct ascii_logo* logo = art->art;
   int attr_to_print = 0;
@@ -1079,6 +1088,78 @@ bool print_cpufetch_riscv(struct cpuInfo* cpu, STYLE s, struct color** cs, struc
 }
 #endif
 
+#ifdef ARCH_ALPHA
+bool print_cpufetch_alpha(struct cpuInfo* cpu, STYLE s, struct color** cs, struct terminal* term, bool fcpuname) {
+  struct ascii* art = set_ascii(get_cpu_vendor(cpu), s);
+  if(art == NULL)
+    return false;
+
+  // Step 1. Retrieve attributes
+  char* cpu_name = get_str_cpu_name(cpu, fcpuname);
+  char* uarch = get_str_uarch(cpu);
+  char* manufacturing_process = get_str_process(cpu);
+  char* max_frequency = get_str_freq(cpu->freq);
+  char* n_cores = get_str_topology(cpu->topo, false);
+  char* features = get_str_features(cpu);
+  char* pp = get_str_peak_performance(cpu->peak_performance);
+
+  char* l1i = NULL;
+  char* l1d = NULL;
+  char* l2 = NULL;
+  if(cpu->cach->L1i->exists) l1i = get_str_l1i(cpu->cach);
+  if(cpu->cach->L1d->exists) l1d = get_str_l1d(cpu->cach);
+  if(cpu->cach->L2->exists)  l2 = get_str_l2(cpu->cach);
+
+  // Step 2. Set attributes
+  if(cpu_name != NULL) {
+    setAttribute(art, ATTRIBUTE_NAME, cpu_name);
+  }
+  setAttribute(art, ATTRIBUTE_UARCH, uarch);
+  setAttribute(art, ATTRIBUTE_TECHNOLOGY, manufacturing_process);
+  setAttribute(art, ATTRIBUTE_FREQUENCY, max_frequency);
+  setAttribute(art, ATTRIBUTE_NCORES, n_cores);
+  if(features != NULL) {
+    setAttribute(art, ATTRIBUTE_FEATURES, features);
+  }
+  if(l1i != NULL) setAttribute(art, ATTRIBUTE_L1i, l1i);
+  if(l1d != NULL) setAttribute(art, ATTRIBUTE_L1d, l1d);
+  if(l2 != NULL)  setAttribute(art, ATTRIBUTE_L2, l2);
+  setAttribute(art, ATTRIBUTE_PEAK, pp);
+
+  // Step 3. Print output
+  bool use_short = false;
+  uint32_t longest_attribute = longest_attribute_length(art, use_short);
+  uint32_t longest_field = longest_field_length(art, longest_attribute);
+  choose_ascii_art(art, cs, term, longest_field);
+
+  if(!ascii_fits_screen(term->w, *art->art, longest_field)) {
+    use_short = true;
+    longest_attribute = longest_attribute_length(art, use_short);
+  }
+
+  print_ascii_generic(art, longest_attribute, term->w, use_short, false);
+
+  free(manufacturing_process);
+  free(max_frequency);
+  free(n_cores);
+  free(features);
+  free(l1i);
+  free(l1d);
+  free(l2);
+  free(pp);
+
+  free(art->attributes);
+  free(art);
+
+  if(cs != NULL) free_colors_struct(cs);
+  free_cache_struct(cpu->cach);
+  free_freq_struct(cpu->freq);
+  free_cpuinfo_struct(cpu);
+
+  return true;
+}
+#endif
+
 struct terminal* get_terminal_size(void) {
   struct terminal* term = emalloc(sizeof(struct terminal));
 
@@ -1118,5 +1199,7 @@ bool print_cpufetch(struct cpuInfo* cpu, STYLE s, struct color** cs, bool show_f
   return print_cpufetch_arm(cpu, s, cs, term);
 #elif ARCH_RISCV
   return print_cpufetch_riscv(cpu, s, cs, term);
+#elif ARCH_ALPHA
+  return print_cpufetch_alpha(cpu, s, cs, term, show_full_cpu_name);
 #endif
 }

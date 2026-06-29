@@ -92,9 +92,9 @@ struct cache {
 };
 
 struct topology {
-  int32_t total_cores;  
+  int32_t total_cores;
   struct cache* cach;
-#if defined(ARCH_X86) || defined(ARCH_PPC)
+#if defined(ARCH_X86) || defined(ARCH_PPC) || defined(ARCH_ALPHA)
   int32_t physical_cores;
   int32_t logical_cores;
   uint32_t sockets;
@@ -126,14 +126,21 @@ struct features {
 #elif ARCH_PPC
   bool altivec;
 #elif ARCH_ARM
-  bool NEON;  
+  bool NEON;
   bool SHA1;
   bool SHA2;
   bool CRC32;
   bool SVE;
   bool SVE2;
   uint64_t cntb;
-#endif  
+#elif ARCH_ALPHA
+  bool BWX;
+  bool FIX;
+  bool CIX;
+  bool MVI;
+  bool PAT;
+  bool PMI;
+#endif
 };
 
 struct extensions {
@@ -158,7 +165,7 @@ struct cpuInfo {
   struct features* feat;
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_PPC)
+#if defined(ARCH_X86) || defined(ARCH_PPC) || defined(ARCH_ALPHA)
   // CPU name from model
   char* cpu_name;
 #endif
@@ -179,6 +186,10 @@ struct cpuInfo {
 #elif ARCH_ARM
   // Main ID register
   uint32_t midr;
+#elif ARCH_ALPHA
+  // implver generation value and implemented amask feature bits
+  uint64_t implver;
+  uint64_t amask;
 #endif
 
 #if defined(ARCH_ARM) || defined(ARCH_RISCV)
@@ -200,7 +211,7 @@ struct cpuInfo {
 #endif
 };
 
-#if defined(ARCH_X86) || defined(ARCH_PPC)
+#if defined(ARCH_X86) || defined(ARCH_PPC) || defined(ARCH_ALPHA)
 char* get_str_cpu_name(struct cpuInfo* cpu, bool fcpuname);
 char* get_str_sockets(struct topology* topo);
 uint32_t get_nsockets(struct topology* topo);
