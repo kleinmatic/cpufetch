@@ -60,17 +60,20 @@ cpufetch is a command-line tool written in C that displays the CPU information i
 
 ## 1. Support
 
-| OS          | x86_64 / x86       | ARM                | RISC-V             | PowerPC            |
-|:-----------:|:------------------:|:------------------:|:------------------:|:------------------:|
-| GNU / Linux | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Windows     | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                |
-| Android     | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                |
-| macOS       | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: |
-| FreeBSD     | :heavy_check_mark: | :x:                | :x:                | :x:                |
+| OS          | x86_64 / x86       | ARM                | RISC-V             | PowerPC            | Alpha              |
+|:-----------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
+| GNU / Linux | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| Windows     | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                | :x:                |
+| Android     | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                | :x:                |
+| macOS       | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| FreeBSD     | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                |
+| NetBSD      | :x:                | :x:                | :x:                | :x:                | :heavy_check_mark: |
 
 **NOTES:**
 - Colors will be used in Windows only if the terminal supports it.
 - Support in macOS ARM is limited to Apple chips only
+- Alpha support detects the microarchitecture (EV4 through EV7) via the
+  `implver` and `amask` instructions, and has been tested on NetBSD/alpha
 
 ## 2. Installation
 ### 2.1 Installing from a package
