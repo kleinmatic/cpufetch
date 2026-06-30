@@ -231,17 +231,17 @@ $C1######## ###########  ######   #   ###### \
 $C1######## ##########   ######       ###### "
 
 #define ASCII_ALPHA \
-"$C1#######################################\
-$C1####  ##############################  #\
-$C1####  ##############################  #\
-$C1####  ##################  ##########  #\
-$C1####  ##  ###   ###  ##    ###   ###  #\
-$C1##    ######  #  #######  ###  #  ##  #\
-$C1#  #  ##  ###    ##  ###  ######  ##  #\
-$C1#  #  ##  #####  ##  ###  ####    ##  #\
-$C1#  #  ##  ##  #  ##  ###  ###  #  ##  #\
-$C1##    ##  ###   ###  ###   ###    ##  #\
-$C1#######################################"
+"$C1#######################################  \
+$C1####  ##############################  #  \
+$C1####  ##############################  #  \
+$C1####  ##################  ##########  #  \
+$C1####  ##  ###   ###  ##    ###   ###  #  \
+$C1##    ######  #  #######  ###  #  ##  #  \
+$C1#  #  ##  ###    ##  ###  ######  ##  #  \
+$C1#  #  ##  #####  ##  ###  ####    ##  #  \
+$C1#  #  ##  ##  #  ##  ###  ###  #  ##  #  \
+$C1##    ##  ###   ###  ###   ###    ##  #  \
+$C1#######################################  "
 
 // inspired by the neofetch mac logo
 #define ASCII_APPLE \
@@ -644,7 +644,7 @@ asciiL logo_kunpeng     = { ASCII_KUNPENG,     48, 17, false, {C_FG_RED, C_FG_WH
 asciiL logo_broadcom    = { ASCII_BROADCOM,    44, 19, false, {C_FG_WHITE, C_FG_RED},                         {C_FG_WHITE,   C_FG_RED}     };
 asciiL logo_arm         = { ASCII_ARM,         42,  5, false, {C_FG_CYAN},                                    {C_FG_WHITE,   C_FG_CYAN}    };
 asciiL logo_ibm         = { ASCII_IBM,         42,  9, false, {C_FG_CYAN, C_FG_WHITE},                        {C_FG_CYAN,    C_FG_WHITE}   };
-asciiL logo_alpha       = { ASCII_ALPHA,       39, 11, true,  {C_BG_RED},                                     {C_FG_RED,     C_FG_WHITE}   };
+asciiL logo_alpha       = { ASCII_ALPHA,       41, 11, true,  {C_BG_RED},                                     {C_FG_RED,     C_FG_WHITE}   };
 asciiL logo_apple       = { ASCII_APPLE,       32, 17, false, {C_FG_WHITE},                                   {C_FG_CYAN,    C_FG_B_WHITE} };
 asciiL logo_google      = { ASCII_GOOGLE,      35, 15, false, {C_FG_RED, C_FG_YELLOW, C_FG_GREEN, C_FG_BLUE}, {C_FG_BLUE,    C_FG_B_WHITE} };
 asciiL logo_allwinner   = { ASCII_ALLWINNER,   47, 16, false, {C_FG_CYAN},                                    {C_FG_B_BLACK, C_FG_B_CYAN } };
